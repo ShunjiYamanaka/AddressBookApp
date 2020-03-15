@@ -135,6 +135,23 @@ namespace AddressBookApp.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Search([Bind(Include ="Kana")] SearchViewModel model) 
+        {
+            if (!string.IsNullOrEmpty(model.Kana))
+            {
+                //一致したらDBよりﾃﾞｰﾀを取得する
+                var list = db.Addresses.Where(item => item.Kana.IndexOf(model.Kana) == 0).ToList();
+                model.Addresses = list;
+            }
+            else 
+            {
+                //何も入力されなければ、全住所を表示する
+                model.Addresses = db.Addresses.ToList();
+            }
+
+            return View(model);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
